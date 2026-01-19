@@ -9,43 +9,6 @@ BOJ No.7569
 
 using namespace std;
 
-void DFS(int start_i, int start_j, vector<vector<int>>& box, int M, vector<vector<int>>& visited, bool& check, int N) {
-	visited[start_i][start_j] = 1;
-	if (box[start_i][start_j] == 1) {
-		check = true;
-	}
-
-
-
-	if (start_i + 1 < box.size() &&
-		start_i / N == (start_i + 1) / N &&
-		box[start_i + 1][start_j] != -1 &&
-		visited[start_i + 1][start_j] == -1) {
-		DFS(start_i + 1, start_j, box, M, visited, check, N);
-	}
-
-	if (start_i - 1 >= 0 && start_i / N == (start_i - 1) / N && box[start_i - 1][start_j] != -1 && visited[start_i - 1][start_j] == -1) {
-		DFS(start_i - 1, start_j, box, M, visited, check, N);
-	}
-
-	if (start_j - 1 >= 0 && box[start_i][start_j - 1] != -1 && visited[start_i][start_j - 1] == -1) {
-		DFS(start_i, start_j - 1, box, M, visited, check, N);
-	}
-
-	if (start_j + 1 < M && box[start_i][start_j + 1] != -1 && visited[start_i][start_j + 1] == -1) {
-		DFS(start_i, start_j + 1, box, M, visited, check, N);
-	}
-
-	if (start_i - N >= 0 && box[start_i - N][start_j] != -1 && visited[start_i - N][start_j] == -1) {
-		DFS(start_i - N, start_j, box, M, visited, check, N);
-	}
-
-	if (start_i + N < box.size() && box[start_i + N][start_j] != -1 && visited[start_i + N][start_j] == -1) {
-		DFS(start_i + N, start_j, box, M, visited, check, N);
-	}
-
-}
-
 void BFS(vector<vector<int>>& box, int M, vector<vector<int>>& visited, int N, int &day, queue<pair<int,int>> &q) {
 	
 	vector<vector<int>> depth(box.size());
@@ -126,42 +89,6 @@ int main() {
 		}
 	}
 
-	// 토마토가 모두 익지 못하는 상황 --> DFS로 1을 갖는 토마토 파악하기
-	for (int i = 0; i < box.size(); i++) {
-		for (int j = 0; j < M; j++) {
-			bool check = false;
-			if (box[i][j] != -1 && visited[i][j] == -1) {
-				DFS(i, j, box, M, visited, check, N);
-				if (check == false) {
-					cout << -1;
-					return 0;
-				}
-			}
-		}
-	}
-
-	bool check = true;
-	for (int i = 0; i < box.size(); i++) {
-		for (int j = 0; j < M; j++) {
-			if (box[i][j] == 0) {
-				check = false;
-				break;
-			}
-		}
-	}
-
-	if (check) {
-		cout << "0";
-		return 0;
-	}
-
-	// visited 초기화
-	for (int i = 0; i < N * H; i++) {
-		for (int j = 0; j < M; j++) {
-			visited[i][j] = -1;
-		}
-	}
-
 	// BFS로 day값 계산
 	int day = 0;
 	queue<pair<int, int>> q;
@@ -174,6 +101,18 @@ int main() {
 		}
 	}
 	BFS(box, M, visited, N, day, q);
+
+	for (int i = 0; i < box.size(); i++) {
+		for (int j = 0; j < M; j++) {
+			if (box[i][j] == 0) {
+				day = -1;
+				break;
+			}
+		}
+		if (day == -1) {
+			break;
+		}
+	}
 	
 	cout << day;
 }
