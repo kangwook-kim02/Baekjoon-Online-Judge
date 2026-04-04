@@ -74,6 +74,15 @@ void DFS(string &op, int start, unordered_map<int,bool> &um, long long &result) 
 		q.pop();
 	}
 
+	/*
+	.size()의 반환 값은 unsigned int 형인데, 만약
+	op.size() - 2의 값이 음수가 된다면 overflow가 발생함
+	따라서 다음부터 PS할 때 음수가 될 것 같으면
+	int length = OO.size();
+	를 하던,
+	아니면 형변환을 하던,
+	무조건 int length = OO.size()를 해야 된다.
+	*/
 	for (int i = start; i < (int)op.size()-2; i++) { // .size() 함수는 unsigned int를 반환한다.
 		um[i] = true;
 		DFS(op, start+4, um, result);
